@@ -1,1 +1,1 @@
-script for cd
+Script for long format ls -l
