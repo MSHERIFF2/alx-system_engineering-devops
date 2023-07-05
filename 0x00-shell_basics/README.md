@@ -1,1 +1,1 @@
-script for pwd
+script for ls
