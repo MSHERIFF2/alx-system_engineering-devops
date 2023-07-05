@@ -1,1 +1,1 @@
-script for ls
+script for cd
