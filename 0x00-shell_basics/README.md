@@ -1,1 +1,1 @@
-Script for hidden files ls -a
+Script for hidden file in long format ls -la
