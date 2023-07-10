@@ -1,2 +1,2 @@
 #!/bin/bash
-sed '$!d' iacta >> iacta_ll
+sed '$!d' iacta >> iacta
