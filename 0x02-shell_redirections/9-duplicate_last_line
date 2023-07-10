@@ -1,2 +1,2 @@
 #!/bin/bash
-tail -n 1 iacta | cat
+sed '$!d' iacta >> iacta_ll
