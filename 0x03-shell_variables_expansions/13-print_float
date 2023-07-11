@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "3.00" > $NUM
+echo "2.31" $NUM
