@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#this running pid
+
+ps auxf
