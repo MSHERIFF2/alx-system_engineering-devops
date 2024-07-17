@@ -1,5 +1,4 @@
-# 1-install_a_package.pp
-
+cat <<EOL > 1-install_a_package.pp
 package { 'python3-pip':
   ensure => installed,
 }
@@ -9,3 +8,4 @@ package { 'Flask':
   provider => 'pip3',
   require  => Package['python3-pip'],
 }
+EOL
