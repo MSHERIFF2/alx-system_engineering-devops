@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 # Installs nginx server
-apt-get update
-apt-get -y install nginx
-ufw allow 'Nginx HTTP'
-echo "Hello World!" > /var/www/html/index.html
-service nginx start
+
+# Update package list and install Nginx
+sudo apt-get update -y
+sudo apt-get install nginx -y
+
+# Create the HTML file to serve
+echo "Hello World!" | sudo tee /var/www/html/index.html
+
+# Modify the default Nginx server block configuration to serve the custom HTML
+sudo sed -i 's|root /var/www/html;|root /var/www/html; index index.html;|' /etc/nginx/sites-available/default
+
+# Restart Nginx to apply changes
+sudo service nginx restart
+
+# Enable Nginx to start on boot
+sudo systemctl enable nginx
