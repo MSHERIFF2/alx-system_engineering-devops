@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
-# This script displays listening sockets with the PID and name of the program to which each socket belongs
+#Display active Internet connections (only servers)
+echo "Active Internet connections (only servers)"
+echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
+sudo ss -tuln -p | awk 'NR>1 {print $1, $2, $3, $4, $5, $6, $7}'
 
-netstat -tlnp | grep LISTEN
+# Display active UNIX domain sockets (only servers)
+echo ""
+echo "Active UNIX domain sockets (only servers)"
+echo "Proto RefCnt Flags       Type       State         I-Node   PID/Program name    Path"
+sudo ss -lx -p | awk 'NR>1 {print $1, $2, $3, $4, $5, $6, $7}'
