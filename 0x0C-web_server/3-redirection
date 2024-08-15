@@ -1,11 +1,26 @@
 #!/usr/bin/env bash
 # Script that configures a new Ubuntu machine to respect above requirements
 
-sudo apt-get update
+sudo apt-get update -y
+
 sudo apt-get install -y nginx
 
 echo "Hello World!" | sudo tee /var/www/html/index.html
-string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.blog.temitayo.com permanent;"
-sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-sudo service nginx restart
+# Add 301 redirect for /redirect_me
+
+sudo sed -i '/servre {/a \\tlocation /redirect_me {\n\t\treturn 301 http://www.google.com/;\n\t}' /etc/nginx/sites-available/default
+
+# Ensure Nginx is listening on port 80 (this is default, but making sure)
+
+sudo sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
+
+sudo sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:80;/g' /etc/nginx/sites-available/default
+
+# Reload Nginx to apply the configuration changes (without using systemctl)
+
+sudo nginx -s reload
+
+# Ensure Nginx starts on boot using update-rc.d
+
+sudo update-rc.d nginx defaults
