@@ -12,7 +12,15 @@ echo "Hello World!" | sudo tee /var/www/html/index.html
 sudo sed -i 's|root /var/www/html;|root /var/www/html; index index.html;|' /etc/nginx/sites-available/default
 
 # Restart Nginx to apply changes
-sudo service nginx restart
+sudo service nginx start
+
+# Ensure Nginx is listening on port 80
+
+sudo sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
+
+sudo sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:80;/g' /etc/nginx/sites-available/default
+
+sudo nginx -s reload
 
 # Enable Nginx to start on boot
-sudo systemctl enable nginx
+sudo update-rc.d nginx defaults
