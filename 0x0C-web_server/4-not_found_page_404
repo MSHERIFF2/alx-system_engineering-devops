@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
-#Configure your Nginx server to have a custom 404 page that contains the string
+# Script to configure an Nginx server to have a custom 404 page and a redirect
 
-sudo apt-get update
+# Update package list and install Nginx
+sudo apt-get update -y
 sudo apt-get install -y nginx
 
-# code to redirect a specific endpoint (eg: redirect /redirect_me to https://blog.temitayo.com)
+# Create a simple HTML file for the main page
 echo "Hello World!" | sudo tee /var/www/html/index.html
-string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.blog.temitayo.com permanent;"
-sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-# code to create error page and add a redirect for error 404
+# Configure Nginx to redirect /redirect_me to an external URL
+sudo sed -i '/server {/a \    location /redirect_me {\n        return 301 https://msheriff2.github.io/My-Portfolio/;\n    }' /etc/nginx/sites-available/default
+
+# Create a custom 404 error page
 echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
-string_for_replacement="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
-sudo sed -i "s/listen 80 default_server;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-# restart the server
+# Configure Nginx to serve the custom 404 page
+sudo sed -i '/server {/a \    error_page 404 /404.html;\n    location = /404.html {\n        root /var/www/html;\n        internal;\n    }' /etc/nginx/sites-available/default
+
+# Restart Nginx to apply changes
 sudo service nginx restart
