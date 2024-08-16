@@ -13,6 +13,6 @@ echo "Hello World!" | sudo tee /var/www/html/index.html
 # Configure the 301 redirect for /redirect_me
 # Adding a location block for the redirect
 sudo sed -i '/server {/a \    location /redirect_me {\n        return 301 https://msheriff2.github.io/My-Portfolio/;\n    }' /etc/nginx/sites-available/default
-
+sudo nginx -t
 # Reload Nginx to apply configuration changes (without using systemctl)
 sudo service nginx reload
