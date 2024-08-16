@@ -1,0 +1,35 @@
+Postmortem: Outage on Web-01 and Web-02 Due to Nginx Misconfiguration
+
+Issue Summary:
+- **Duration:** The outage lasted for 2 hours, from 10:00 AM to 12:00 PM GMT on August 16, 2024.
+- **Impact:** All HTTP/HTTPS requests to `temitayo.tech` were failing, resulting in a 100% service outage for both web and API services hosted on web-01 and web-02. Approximately 90% of users were unable to access the site or API services, leading to significant disruption.
+- **Root Cause:** The root cause was a misconfiguration in the Nginx server setup, specifically related to the implementation of a custom HTTP header (`X-Served-By`) on both web servers.
+
+### Timeline:
+- **10:00 AM GMT** - Issue detected: A monitoring alert triggered due to a spike in 5xx HTTP error codes across both servers.
+- **10:05 AM GMT** - The on-call engineer investigated the issue, suspecting network connectivity problems.
+- **10:15 AM GMT** - Network connectivity was ruled out as the servers were reachable via SSH, but Nginx was unresponsive.
+- **10:30 AM GMT** - The issue was escalated to the web infrastructure team after initial debugging failed to identify the cause.
+- **10:45 AM GMT** - The team noticed that Nginx was not properly loading the configuration files.
+- **11:00 AM GMT** - Misleading path: The team suspected SSL certificate issues due to recent updates, but this was ruled out after verifying the certificates.
+- **11:30 AM GMT** - The team identified that the problem was related to a syntax error in the Nginx configuration file related to the custom `X-Served-By` header.
+- **11:45 AM GMT** - The configuration was corrected, and the Nginx service was restarted on both servers.
+- **12:00 PM GMT** - Full service was restored, and the incident was resolved.
+
+### Root Cause and Resolution:
+The root cause of the outage was a syntax error in the Nginx configuration files on both web-01 and web-02. When implementing the custom `X-Served-By` header, the configuration was incorrectly formatted, causing Nginx to fail to start correctly. This issue went unnoticed during the initial deployment because the syntax error did not produce a clear error message during the validation phase, leading to a full outage when Nginx attempted to reload the configuration.
+
+The issue was fixed by manually correcting the configuration syntax, testing the changes in a staging environment, and then redeploying the corrected configuration to the production servers. Once the configurations were corrected and Nginx was restarted, the servers began serving requests normally.
+
+### Corrective and Preventative Measures:
+**Improvements:**
+- Implement stricter validation checks during the deployment process, specifically for configuration files.
+- Enhance monitoring to detect Nginx configuration errors immediately upon deployment.
+
+**Tasks:**
+1. Add automated syntax checking for Nginx configuration files as part of the CI/CD pipeline.
+2. Implement a staging environment that closely mirrors the production environment to catch configuration issues before deployment.
+3. Set up monitoring alerts specifically for Nginx service status and configuration reloads.
+4. Conduct a training session for the team on best practices for Nginx configuration to prevent similar issues in the future.
+
+By addressing these points, we aim to prevent similar outages and ensure a more resilient web infrastructure moving forward.
