@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #fire wall rules
 
 sudo apt-get -y update
